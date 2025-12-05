@@ -3,11 +3,14 @@ import sequelize from "./src/config/database.js";
 import "./src/models/Task.js";
 import "./src/models/User.js";
 
+import authRoutes from "./src/routes/authRoutes.js";
 
 const app = express();
 app.use(express.json());
 
 const PORT = 6000;
+
+app.use("/api/auth", authRoutes);
 
 sequelize
   .sync({ alter: true })

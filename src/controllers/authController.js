@@ -12,11 +12,11 @@ const generateToken = (userId) => {
 
 const register = async (req, res, next) => {
   try {
-    const { username, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!email || !username || !password) {
+    if (!email || !name || !password) {
       throw new AppError("Tous les champs sont requis", 400);
     }
 
@@ -26,7 +26,7 @@ const register = async (req, res, next) => {
 
     const existingUser = await User.findOne({
       where: {
-        [Op.or]: [{ email }, { username }],
+        [Op.or]: [{ email }, { name }],
       },
     });
 
@@ -40,10 +40,9 @@ const register = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      username,
+      name,
       email,
       password: hashedPassword,
-      role: role || "user",
     });
 
     const token = generateToken(user.id);
@@ -54,9 +53,8 @@ const register = async (req, res, next) => {
       data: {
         user: {
           id: user.id,
-          username: user.username,
+          name: user.name,
           email: user.email,
-          role: user.role,
         },
         token,
       },
@@ -76,7 +74,7 @@ const login = async (req, res, next) => {
 
     const user = await User.findOne({
       where: { email },
-      attributes: ["id", "username", "email", "password", "role"],
+      attributes: ["id", "name", "email", "password"],
     });
 
     if (!user) {
@@ -97,9 +95,8 @@ const login = async (req, res, next) => {
       data: {
         user: {
           id: user.id,
-          username: user.username,
+          name: user.name,
           email: user.email,
-          role: user.role,
         },
         token,
       },
@@ -109,21 +106,21 @@ const login = async (req, res, next) => {
   }
 };
 
-const getProfile = async (req, res, next) => {
-  const userId = req.user.id;
-  const user = await User.findByPk(userId, {
-    attributes: { exclude: ["password"] },
-  });
-  if (!user) {
-    return res.status(404).json({
-      success: false,
-      message: "Utilisateur introuvable",
-    });
-  }
-  res.status(200).json({
-    success: true,
-    data: user,
-  });
-};
+// const getProfile = async (req, res, next) => {
+//   const userId = req.user.id;
+//   const user = await User.findByPk(userId, {
+//     attributes: { exclude: ["password"] },
+//   });
+//   if (!user) {
+//     return res.status(404).json({
+//       success: false,
+//       message: "Utilisateur introuvable",
+//     });
+//   }
+//   res.status(200).json({
+//     success: true,
+//     data: user,
+//   });
+// };
 
-export { register, login, getProfile };
+export { register, login };
