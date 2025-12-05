@@ -1,36 +1,20 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
+import Task from "./Task.js";
 
-const User = sequelize.define(
-  "User",
-  {
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: { isEmail: true },
-    },
-
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+const User = sequelize.define("User", {
+  name: DataTypes.STRING,
+  email: {
+    type: DataTypes.STRING,
+    unique: true
   },
-  {}
-);
+  password: DataTypes.STRING,
+});
 
-// Association (ghadi t3ayet 3liha mn models/index.js)
-User.associate = (models) => {
-  User.hasMany(models.Task, {
-    foreignKey: "userId",
-    as: "tasks",
-    onDelete: "CASCADE",
-  });
-};
+User.hasMany(Task, {
+  foreignKey: "userId",
+  as: "tasks",
+  onDelete: "CASCADE",
+});
 
 export default User;

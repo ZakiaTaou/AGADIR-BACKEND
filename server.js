@@ -1,6 +1,8 @@
 import express from "express";
 import sequelize from "./src/config/database.js";
-import models from "./src/models/index.js";  // <<< مهم جدا
+import "./src/models/Task.js";
+import "./src/models/User.js";
+
 
 const app = express();
 app.use(express.json());
