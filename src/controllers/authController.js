@@ -4,8 +4,8 @@ import { AppError } from "../middlewares/errorHandler.js";
 import { Op } from "sequelize";
 import bcrypt from "bcrypt";
 
-const generateToken = (userId) => {
-  return JWT.sign({ id: userId }, process.env.JWT_SECRET, {
+const generateToken = (user_id) => {
+  return JWT.sign({ id: user_id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE || "7d",
   });
 };
